@@ -1,0 +1,71 @@
+\begin{thebibliography}{10}
+\ifx \showCODEN  \undefined \def \showCODEN #1{CODEN #1}  \fi
+\ifx \showISBN   \undefined \def \showISBN  #1{ISBN #1}   \fi
+\ifx \showISSN   \undefined \def \showISSN  #1{ISSN #1}   \fi
+\ifx \showLCCN   \undefined \def \showLCCN  #1{LCCN #1}   \fi
+\ifx \showPRICE  \undefined \def \showPRICE #1{#1}        \fi
+\ifx \showURL    \undefined \def \showURL {URL }          \fi
+\ifx \path       \undefined \input path.sty               \fi
+\ifx \ifshowURL \undefined
+     \newif \ifshowURL
+     \showURLtrue
+\fi
+
+\bibitem{cbmn:url}
+Université de~Bordeaux.
+\newblock Chimie et biologie des membranes et nanoobjets - umr 5248.
+\newblock \url{http://www.cbmn.u-bordeaux.fr}.
+
+\bibitem{imagej:url}
+National~Institute of~Health.
+\newblock National institute of health - imagej's website.
+\newblock \url{http://www.rsbweb.nih.gov/ij/}.
+
+\bibitem{java:url}
+Oracle.
+\newblock Java - object-oriented programming language.
+\newblock \url{http://www.oracle.com/technetwork/java/index.html}.
+
+\bibitem{javascript:url}
+Wikipedia.
+\newblock Javascript - a multi-paradigm language, supporting object-oriented,
+  imperative, and functional programming styles.
+\newblock \url{http://en.wikipedia.org/wiki/Javascript}.
+
+\bibitem{PdetectEHT:article}
+Yuanxin Zhu, Bridget Carragher, Fabrice Mouche, and Clinton~S. Potter.
+\newblock Automatic particle detection through efficient hough transforms.
+\newblock {\em IEEE Transactions on Medical Imaging}, Sept. 2003.
+
+\bibitem{HT:url}
+Wikipedia.
+\newblock Definition and description of hough transform.
+\newblock \url{http://en.wikipedia.org/wiki/Hough_transform}.
+
+\bibitem{GHT:url}
+Wikipedia.
+\newblock Definition and description of generalized hough transform.
+\newblock \url{http://en.wikipedia.org/wiki/Generalised_Hough_transform}.
+
+\bibitem{DoGAff:article}
+Robert Langlois, Jesper Pallesen, and Joachim Frank.
+\newblock Reference-free particle selection enhanced with semi-supervised
+  machine learning for cryo-electron microscopy.
+\newblock {\em Journal of Structural Biology}, Jun. 2011.
+
+\bibitem{Scripps:url}
+Scripps~Research Institute.
+\newblock Scripps research institute website.
+\newblock \url{http://www.scripps.edu/}.
+
+\bibitem{Perceptron:article}
+William V.~Nicholson and Robert~M. Glaeser.
+\newblock Review : Automatic particle detection in electron microscopy.
+\newblock {\em Journal of Structural Biology}, Feb. 2001.
+
+\bibitem{GPL:url}
+Inc. Free Software~Foundation.
+\newblock The gnu general public license website.
+\newblock \url{http://www.gnu.org/copyleft/gpl.html}.
+
+\end{thebibliography}

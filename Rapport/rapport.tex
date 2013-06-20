@@ -1,0 +1,131 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{ucs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{fullpage}
+\usepackage[french]{babel}
+\usepackage{xcolor}
+\usepackage[pdftex]{graphicx}
+\usepackage{titlesec}
+\usepackage{cite}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{rotating}
+\usepackage[top=2cm,bottom=2.5cm,left=2.5cm]{geometry}
+
+%%%%%%%%%%%%%%%%%encadrementdes chapitres%%%%%%%%%%%%%%%%%%%%%%%
+\titleformat{\chapter} % commande de sectionnement affectée
+[frame] % une des formes prédéfinies
+{\itshape} % format appliqué au titre dans son ensemble
+{\filright\small\enspace Chapitre \thechapter\enspace} % format du « n° » du titre
+{8pt} % distance (horiz. ou vert.) entre le n° et le texte du titre
+{\Large\bfseries\filcenter} % format appliqué au texte du titre
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\title{Rapport Projet de programmation}
+%\author{Charlotte \textsc{Herice}\\ Typhaine \textsc{Paysan-Lafosse}\\ Thomas \textsc{Faux}\\ Joris \textsx{Sansen}}
+% Commenté car provoque une erreur lors de la compilation
+\begin{document}
+%\maketitle
+\input{./titleRapport.tex}
+\newcommand{\cme}{cryo-MET}
+\newcommand{\me}{MET}
+\newcommand{\java}{Java~{\tiny \texttrademark}}
+\newcommand{\js}{JavaScript}
+\newcommand{\imj}{ImageJ}
+%\renewcommand{\thefigure}{\arabic{figure}}
+
+\begin{abstract}
+\paragraph*{}
+Dans le cadre des recherches de l'équipe ACMPC (Architecture des Complexes Membranaires et Processus Cellulaires) de l'unité mixte de recherche CNRS CBMN (Chimie et Biologie des Membranes et Nanoobjets), il est fréquent d'avoir à piquer manuellement un grand nombre de particules (complexes protéiques ou chimiques) sur des micrographies de microscopie électronique. Celles-ci sont ensuite traitées avec des outils statistiques en vue de calculer des images moyennes ou des reconstructions 3D (3 Dimensions). Pour cela, le logiciel \imj ~est couramment utilisé pour cette étape préliminaire, mais il ne dispose d'aucun outil automatique adapté pour traiter une grande quantité de données.
+\paragraph*{}
+L'objectif de notre projet a donc été de pallier à ce manque en créant un plugin pour ce logiciel. \imj ~étant implémenté en \java , nous avons créé une interface facile à utiliser en suivant ce langage. A l'heure actuelle, trois méthodes de sélection de particules (piquage) ainsi qu'un outil de découpage (\textit{crop} en anglais) de ces objets ont été implémenté.
+\paragraph*{}
+Ce plugin, nommé \emph{Pick\_EM} a également été créé dans le but de réunir dans un même outils plusieurs algorithmes, chacun ayant une sensibilité différente en fonction des cibles et de la qualité des images. Le code suit donc les règles de la programmation orientée objet afin de faciliter l'insertion d'une nouvelle méthode de piquage.
+
+%\paragraph*{} Ce rapport traite de l'organisation globale du programme, de sa conception et de sa réalisation, expliquant les choix d'implémentation, 
+
+%Le contexte de ce projet est l'étude de morphologies de virus ou de patchs de virus observés au microscope électronique (ME) dans le cadre d'une prestation de services avec une société pharmaceutique. Le projet consiste en le développement d'un utilitaire qui sélectionne automatiquement les particules virales et les protéines membranaires dans les images issues de \cme. Cet utilitaire se présente sous la forme d'un plugin ImageJ, écrit en  langage \java.
+%Il aborde notamment la création de l'interface utilisateur, les méthodes de piquages choisies et implémentées, ainsi que l'organisation générale du programme. 
+\end{abstract}
+
+\thispagestyle{empty}
+
+\chapter*{Remerciements}
+
+\thispagestyle{empty}
+
+Nous tenons tout d'abord à remercier Jean-Christophe \textsc{Taveau} et Marie \textsc{Beurton-Aimar} pour nous avoir encadré et conseillé tout au long de ce projet, ainsi que d'avoir su nous faire partager leur expérience. \\
+
+Nous remercions également Olivier \textsc{Lambert} de nous avoir accueilli au sein de l'équipe Architecture des Complexes Membranaires et Processus Cellulaires du CBMN. \\
+
+Nous tenons aussi à remercier Grégoire \textsc{Naudin} pour ses conseils, son soutient, son humour et les nombreuses discussions enrichissantes que nous avons partagé.  
+
+\thispagestyle{empty}
+
+\tableofcontents
+
+\thispagestyle{empty}
+
+
+\chapter*{Introduction}
+
+\setcounter{page}{5}
+
+\addcontentsline{toc}{chapter}{Introduction}
+Notre projet s'est déroulé au sein du laboratoire de Chimie et Biologie des Membranes et Nanoobjets de Bordeaux (CBMN~\cite{cbmn:url}).
+Il s'agit d'un laboratoire de recherche public composé de douze équipes de recherche dont l'équipe \emph{Architecture des Complexes Membranaires et processus cellulaires} (ACMPC). %
+Cette équipe, dirigée par O.\textsc{Lambert}, s'intéresse à l'architecture de complexes membranaires sur des structures de type protéine-liposome. C'est dans ce cadre d'étude que les chercheurs travaillent avec un \emph{microscope électronique à transmission} (\me) afin d'obtenir des micrographies des structures protéiques puis de les analyser. \\
+
+Bien que les principaux projets de recherche de cette équipe portent essentiellement sur l'étude des protéines membranaires et des complexes chimiques nanométriques, l'équipe a aussi une activité de services avec par exemple, des projets d'imagerie sur des virus fournis par une entreprise pharmaceutique. Il est donc nécessaire d'automatiser au maximum les différentes étapes de traitement et d'analyse d'images pour avoir un résultat rapide en réduisant les interventions manuelles d'un opérateur (microscopiste, biologiste, etc.). Ceci est d'autant plus vrai que la nouvelle génération de MET permet une collecte de données à haut débit, avantage non négligeable mais qui pose le problème du temps de traitement des données collectées. 
+
+\paragraph*{}
+Dans le cadre de leurs recherches et pour la partie qui nous intéresse, l'analyse concerne le traitement des images collectées au \me ~et dont la première étape \- nommée \textit{picking}, en anglais ; dans ce texte, nous utiliserons le terme "piquage" \- consiste à isoler chacune des particules dans des petites images.  %
+Notre objectif était l'implémentation d'une interface contenant plusieurs méthodes de piquage automatisées.
+Celle-ci est implémentée en \java ~\footnote{\java\ est un langage orienté-objet développé par Oracle~\cite{java:url}} sous la forme d'un plugin \imj ~\cite{imagej:url} proposant à l'utilisateur le choix entre différents algorithmes de picking pré-installés. Il pourra en \^etre ajouté de nouveaux si on le souhaite, tout en minimisant le code source du plugin à modifier.  
+
+\paragraph*{}
+Dans la suite de ce rapport, nous développerons plusieurs points. Tout d'abord une partie Analyse dans laquelle nous remettrons notre projet dans son contexte et ferons un état des lieux des besoins associés. Ensuite, une partie Conception dans laquelle nous expliquerons l'organisation de notre code et enfin, la partie Réalisation contiendra les solutions apportées au sujet.
+
+\input{./analyse.tex}
+
+\input{./conception.tex}
+
+\input{./realisation.tex}
+
+\chapter*{Conclusion}
+
+\addcontentsline{toc}{chapter}{Conclusion}
+
+Le but de notre projet était l'implémentation en \java ~d'un outil pour le logiciel \imj ~permettant un piquage automatique de particules sur des images issues de cryo-microscopie. \\
+Notre plugin se présente sous la forme d'une interface et donne à l'utilisateur le choix entre plusieurs algorithmes de piquage. \\
+Nous avons implémenté trois algorithmes dans notre plugin : Différence de dilatation, Différence gaussienne et Corrélation d'images. Leur efficacité varie en fonction du type de particule à sélectionner et de la qualité de l'image à traiter. \\
+
+Cette expérience nous a permis de mieux maitriser la programmation en langage \java ~ainsi que de mieux connaitre le fonctionnement du logiciel \imj. De plus, ce premier projet en équipe nous a donné un aperçu plus précis de ce que sera notre futur métier. 
+
+
+\addcontentsline{toc}{chapter}{Bibliographie}
+\bibliographystyle{unsrt}
+\bibliography{rapport}
+
+\appendix
+\chapter{Annexes}
+
+\addcontentsline{toc}{chapter}{Annexes}
+
+\newpage
+
+\section{Diagramme des classes du plugin Pick\_EM}
+
+\begin{figure}[!ht] 
+\begin{center}
+\includegraphics[width=1.4\textwidth, angle=90]{diagComplet.png}
+\end{center}
+\end{figure}
+\section{Code source du plugin ImageJ Pick\_EM}
+\end{document}

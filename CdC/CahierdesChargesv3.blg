@@ -1,0 +1,45 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: CahierdesChargesv3.aux
+The style file: is-unsrt.bst
+Database file #1: CahierdesChargesv2.bib
+You've used 11 entries,
+            2261 wiz_defined-function locations,
+            573 strings with 6139 characters,
+and the built_in function-call counts, 1864 in all, are:
+= -- 116
+> -- 65
+< -- 0
++ -- 28
+- -- 17
+* -- 31
+:= -- 253
+add.period$ -- 33
+call.type$ -- 11
+change.case$ -- 11
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 116
+empty$ -- 302
+format.name$ -- 17
+if$ -- 458
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 3
+newline$ -- 69
+num.names$ -- 11
+pop$ -- 101
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 49
+stack$ -- 0
+substring$ -- 0
+swap$ -- 11
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 11
+width$ -- 13
+write$ -- 115

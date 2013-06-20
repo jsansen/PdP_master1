@@ -1,0 +1,129 @@
+
+\newcommand{\black}{\color{black}}
+\newcommand{\blue}{\color{blue}}
+
+\chapter{Conception}
+
+\section{Interface graphique}
+
+Comme précisé précédemment, notre programme se présente sous la forme d'un plugin \imj . L'interface graphique a été réalisée grâce à la bibliothèque  \java ~Swing. 
+La fenêtre servant d'interface est composée de différentes boîtes (panneaux) contenant différents outils (boutons, listes, zones de saisie et zones de texte) permettant l'interaction entre l'utilisateur et le programme. Ces boîtes peuvent s'imbriquer les unes dans les autres afin d'obtenir des structures plus complexes et un meilleur rendu visuel. \\
+L'interface du plugin est simple, elle prend la forme d'une fenêtre composée d'un menu déroulant, dans lequel se trouvent les différents algorithmes, et de quatre boutons. 
+
+\subsection{Panneaux}
+
+La Figure \ref{panneaux} donne un aperçu de l'organisation des différents panneaux de notre interface. Celle-ci est composée d'une arborescence de panneaux comportant un panneau principal (en bleu, permettant d'organiser la fenêtre du plugin), lui-m\^eme constitué des trois panneaux subsidiaires (en orange) suivants :
+\begin{description}
+\item \textbf{Le premier panneau} contient une liste déroulante permettant le choix de l'algorithme. 
+\item \textbf{Le panneau du milieu} est vide au lancement du plugin et s'actualise en fonction de l'algorithme de piquage choisi. Il affiche une aide rapide sur les conditions d'utilisation de l'algorithme de piquage, les zones de saisies utilisateur propre à cet algorithme. Il affiche également les choix génériques : mode de débogage, mode de découpe des sélections et taille de la sélection, gestion du bruit de fond. \\
+Tout cela s'organise à l'aide de sous-panneaux (en violet).
+\item \textbf{Le dernier panneau} contient les boutons d'actions : prévisualisation, exécution, affichage des résultats, informations/aide.
+\item \textbf{Le panneau principal} permet notamment d'imposer la taille de l'interface.
+\end{description}
+
+\begin{figure}[!h] 
+\begin{center}
+\includegraphics[width=0.4\textwidth]{pluginCadres.png}
+\caption{Organisation des panneaux pour l'algorithme Difference of Gaussian}
+\label{panneaux}
+\end{center}
+\end{figure}
+\pagebreak
+
+\subsection{Boutons}
+
+Les boutons doivent répondre aux clics de la souris et lancer l'action correspondante en fonction de l'algorithme de piquage choisi par l'utilisateur :
+
+\begin{description}
+\item \textbf{Le bouton de prévisualisation} permet de tester le piquage obtenu par l'algorithme sélectionné sur l'image courante.
+\item \textbf{Le bouton d'exécution} permet d'appliquer l'algorithme sur l'image ou la pile d'images sélectionnée, lorsque l'utilisateur est s\^ur des paramètres qu'il souhaite appliquer.
+\item \textbf{Le bouton d'information/aide} est une aide d'utilisation du plugin ainsi que des conditions de fonctionnement des algorithmes.
+\item \textbf{Le bouton d'affichage des résultats} permet d'afficher et de sauvegarder le tableau des coordonnées des particules sélectionnées.% avec l'aide d'\imj.  
+\end{description}
+Pour que le plugin puisse fonctionner, l'utilisateur devra au préalable avoir ouvert une image ou un \textit{stack} d'images à l'aide d'\imj.
+\pagebreak
+
+\section{Récupération des paramètres}
+
+Les méthodes de piquage ont une classe mère commune. L'utilisateur sélectionne un algorithme dans le menu déroulant et détermine certains paramètres. Quelques uns sont propres aux algorithmes et d'autres sont communs à tous tels que :
+
+\begin{itemize}
+\item la gestion du bruit de fond,
+\item la taille des images des particules sélectionnées lorsqu'on demande le \textit{stack} d'images,
+\item l'activation du débogage (s'il est implémenté dans l'algorithme),
+\item l'activation du découpage des particules à partir du piquage obtenu.
+\end{itemize}
+
+\section{Algorithmes}
+
+\subsection{Corrélation d'image}
+
+La méthode par corrélation croisée donne des résultats similaires à une transformée de Hough pour des objets circulaires. Elle produit une carte de corrélation entre une référence (dans notre cas, un cercle de taille définie) et une image de MET contenant des particules circulaires. Chaque pixel de cette carte correspond à la mesure de similarité entre les deux images. Les valeurs élevées des pixels représentent donc les meilleures similarités et permettent de localiser les particules circulaires de même rayon que celle de l'image de référence. Cette opération est réalisée en espace fréquentiel via une Transformée de Fourier et est déjà implantée dans ImageJ. \\
+Par rapport à la transformée de Hough, la corrélation croisée est beaucoup plus rapide mais est réservée (pour l'implantation dans ImageJ) à des images carrées dont le côté doit être une puissance de 2. Cet inconvénient ne nous gêne pas car les images de MET sont de 2048x2048 pixels (et la plupart des traitements sont appliqués à des images réduites de 1024x1024). \\
+
+\noindent
+Pour cette méthode de piquage, plusieurs images de référence sont utilisées avec des cercles de divers rayons afin de sélectionner toutes les particules circulaires des images de MET. L'utilisateur doit entrer les rayons minimal et maximal des particules à sélectionner, ainsi que la valeur de l'incrément. \\
+Pour un résultat optimal, avant de lancer la sélection des particules avec cet algorithme, l'utilisateur devra traiter l'image pour éliminer un maximum de bruit de fond (utilisation de filtres).
+
+\subsection{Différence de Gaussiennes (DoG pour \textit{Difference of Gaussian})}
+
+La différence de Gaussiennes est une technique qui soustrait une image à laquelle a été appliqué un filtre gaussien à une deuxième image, elle aussi filtrée (par le m\^eme filtre) mais en utilisant une valeur d'écart-type plus petite, donc moins filtrée. Par conséquent, les bords des particules sont dégradés, nous permettant de récupérer les maxima de l'image résultante, c'est-à-dire le centre des particules.\\
+%La différence de Gauss est une technique qui consiste en la soustraction d'une version floutée %de l'image d'origine à une autre version moins floutée de cette même image.\\
+\noindent
+Il est demandé à l'utilisateur d'entrer les valeurs d'écart-type qui seront utilisées pour appliquer les filtres gaussiens.
+
+\subsection{Extraction de contours}
+
+Cette méthode (aussi appelée "Différence de dilatation") repose sur le même principe que la Différence de Gaussiennes, mais en utilisant des opérateurs de morphologie mathématique (érosion et dilatation). Nous lui appliquons un certain nombre de cycles de dilatation et obtenons alors des particules de plus grande taille. A la soustraction des deux images, seuls les contours des particules apparaîtront, nous permettant de récupérer le centre de particules.\\
+L'utilisateur devra entrer le nombre de cycles de dilatation qu'il souhaite appliquer à chaque image.
+
+\section{Pile d'images résultantes}
+
+Si l'utilisateur le désire, il peut récupérer une pile d'images contenant les particules piquées. Celle-ci est obtenue à partir du tableau des coordonnées que la fonction de création du \textit{stack} prend en paramètre d'entrée.
+Les particules trop près du bord sont éliminées, les autres ajoutées dans un \textit{stack} qui est finalement affiché à l'utilisateur.
+
+\section{Organisation orientée objet du programme}
+
+Afin de clarifier et de simplifier le code, nous avons tenté de séparer les grandes fonctions du programme en suivant les principes de la programmation orientée objet.
+
+\subsection{Séparation interface graphique et traitement d'images}
+
+Sans suivre le patron de conception Modèle-Vue-Controleur (MVC~\cite{mvc:url}), nous avons créé différentes classes permettant de distinguer la partie GUI de la partie algorithme. Nous obtenons ainsi des classes ne gérant que l'aspect graphique du plugin. Celles-ci gèrent plus particulièrement les panneaux propres aux méthodes de piquage ainsi que les classes bien distinctes effectuant les traitements d'images.
+
+\subsection{Séparation traitement d'images et création du \textit{stack}}
+
+La partie permettant la création du \textit{stack} d'images individuelles a été séparée des méthodes de piquage afin d'éviter la répétition de ce code dans chaque algorithme. Cela permet aussi d'y faire appel en dehors de nos algorithmes, contrairement à une implémentation de cette fonction dans une classe mère.
+
+\subsection{Patrons de conception}
+
+Cette séparation GUI/traitement/\textit{stack} à dû être accompagnée de la création de classes suivant des patrons de conception particulier : la \emph{factory} et le \emph{singleton}. 
+\begin{description}
+\item [Le \emph{singleton}] est un patron de conception (\textit{design pattern}) permettant de restreindre l'instanciation d'une classe à un seul objet (ou bien à quelques objets seulement). La classe \texttt{Attributes} en \emph{singleton} permet de conserver les paramètres choisis par l'utilisateur. De ce fait, même lorsqu'il exécute plusieurs algorithmes, une seule instance de cette classe peut exister, actualisant les paramètres choisis par l'utilisateur.
+\item[La \emph{factory}] définit une interface pour la création d'objets (ou groupes d'objets). La classe \texttt{AlgoFactory} en \emph{factory} rend possible les transitions entre chaque méthode de piquage. Elle amorce le panneau propre à l'algorithme permettant d'actualiser l'interface et ainsi de récupérer les paramètres utilisateur. Ensuite, lorsque l'utilisateur clique sur les boutons d'exécution ou de prévisualisation, la \emph{factory} lancera les actions correspondantes. Afin d'éviter des erreurs d'instanciations, cette classe suit également le patron de conception \emph{singleton}.
+%\item [Le \emph{singleton}] est un patron de conception (design pattern) permettant de restreindre l'instanciation d'une classe à un seul objet (ou bien à quelques objets seulement). La classe en \emph{singleton} permet de conserver les paramètres choisis par l'utilisateur. De ce fait, même lorsqu'il exécute plusieurs algorithmes, une seule instance de cette classe peut exister, actualisant les paramètres choisis par l'utilisateur.
+\end{description}
+
+\subsection{Modularité et réutilisation du code}
+
+L'organisation orientée objet du programme a fortement facilité l'écriture du programme, évitant la répétition de lignes de code qui pouvaient \^etre factorisées. De plus, cela permet une grande modularité au sein de notre programme, facilitant l'ajout ou le retrait d'un algorithme de piquage et de son interface dans notre plugin. Cette modularité est telle qu'elle permet, en ce qui concerne le module de création du \textit{stack} de particules sélectionnées, de l'utiliser en dehors de notre plugin.\\
+Cela tient un rôle important dans notre projet car, comme pour beaucoup de logiciels libres, \imj ~se développe énormément gr\^ace à sa communauté d'utilisateurs qui participe au développement de plugins. Après validation par le personnel du NIH \footnote{National Institute of Health} responsable de ce projet, les plugins sont mis à la disposition des utilisateurs. Ainsi, chacun pourrait ajouter/améliorer des méthodes de piquage de particules, développant et augmentant l'efficacité et la sélectivité de notre plugin. \\
+
+Ci-après (Figure \ref{classes}) le diagramme général de l'organisation de nos classes :
+
+\begin{figure}[!h] 
+\begin{center}
+\includegraphics[width=0.8\textwidth]{class_diagram.png}
+\caption{Organisation générale des classes du plugin Pick\_EM}
+\label{classes}
+\end{center}
+\end{figure}
+
+\pagebreak
+Afin de faciliter la portabilité de notre plugin, nous avons choisi de le compresser au format \emph{JAR\footnote{Java ARchive\cite{jar:url}}} qui est un fichier ZIP\footnote{Format de fichier permettant l'archivage et la compression de données sans perte de qualité \cite{zip:url}} utilisé pour distribuer un ensemble de classes \java. Ce format est utilisé pour stocker les définitions des classes, constituant l'ensemble d'un programme.
+Ce format est directement pris en compte par \imj ~et, lorsque l'archive est placée dans le dossier correspondant, directement ajouté au menu des plugins.\\
+
+Cette archive contient les fichiers source \emph{.java} pour permettre la modification du code et les fichiers compilés \emph{.class} afin de permettre l'utilisation du plugin sans avoir de problèmes de compilation (généralement dus à la version de \java ). \\
+
+Du fait que notre plugin soit \textit{open-source} et en libre accès, il était important de protéger l'accès à notre travail. Pour cela, nous avons décidé de placer notre programme sous licence. \\
+Plusieurs types de licence étaient envisageables, notamment les licences \emph{GPL}, L-\emph{GPL}, \emph{BSD} pour celles en anglais, et les licences \emph{CéCill} pour celles propres à la législation française. Sur l'avis de nos tuteurs, mais aussi parce que c'est celle la plus couramment utilisée pour les plugins \imj , nous avons choisi la licence \emph{GPL} qui est la plus permissive tout en nous garantissant l'accès à notre travail. 
+

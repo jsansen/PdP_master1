@@ -1,0 +1,16 @@
+\select@language {french}
+\contentsline {chapter}{\numberline {1}Contexte}{2}
+\contentsline {section}{\numberline {1.1}Sujet}{2}
+\contentsline {section}{\numberline {1.2}Objectifs}{2}
+\contentsline {chapter}{\numberline {2}\'Etat de l'existant}{4}
+\contentsline {section}{\numberline {2.1}D\IeC {\'e}tection \IeC {\`a} l'aide de r\IeC {\'e}f\IeC {\'e}rences}{4}
+\contentsline {section}{\numberline {2.2}Piquage de particules sans r\IeC {\'e}f\IeC {\'e}rences}{4}
+\contentsline {subsection}{\numberline {2.2.1}D\IeC {\'e}tection des bords et transform\IeC {\'e}e de Hough}{4}
+\contentsline {subsection}{\numberline {2.2.2}DoGLFC et classement par affinit\IeC {\'e}}{5}
+\contentsline {section}{\numberline {2.3}Perceptron}{5}
+\contentsline {chapter}{\numberline {3}Analyse des besoins}{7}
+\contentsline {section}{\numberline {3.1}Besoins fonctionnels}{7}
+\contentsline {section}{\numberline {3.2}Besoins non fonctionnels}{7}
+\contentsline {chapter}{\numberline {4}Choix et explications}{9}
+\contentsline {section}{\numberline {4.1}Langages choisis}{9}
+\contentsline {section}{\numberline {4.2}Algorithmes de piquage}{10}
